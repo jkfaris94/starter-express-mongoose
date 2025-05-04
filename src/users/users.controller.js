@@ -1,5 +1,23 @@
 const User = require("./users.model");
 
+async function userExists(req, res, next) {
+  const { userId } = req.params;
+  const foundUser = await User.findOne({ _id: userId });
+  if (foundUser) {
+    res.locals.user = foundUser;
+    return next();
+  }
+  next({
+    status: 404,
+    message: `User id not found: ${userId}`
+  });
+}
+
+function read(req, res, next) {
+  res.json({ data: res.locals.user });
+}
+
+
 async function list(req, res) {
   const users = await User.find();
   res.send(users);
@@ -30,5 +48,6 @@ async function create(req, res) {
 
 module.exports = {
   list,
-  create: [bodyDataHas("username"), bodyDataHas("email"), create]
+  create: [bodyDataHas("username"), bodyDataHas("email"), create],
+  read: [userExists, read],
 };

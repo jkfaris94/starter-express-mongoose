@@ -8,4 +8,8 @@ router
   .post(controller.create)
   .all(methodNotAllowed);
 
+router
+    .route("/:userId")
+    .get(controller.read);
+
 module.exports = router;
