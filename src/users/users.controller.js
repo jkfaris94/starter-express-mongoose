@@ -17,6 +17,16 @@ function read(req, res, next) {
   res.json({ data: res.locals.user });
 }
 
+async function update(req, res) {
+  const user = res.locals.user;
+  const { data: { username, email } = {} } = req.body;
+
+  user.username = username;
+  user.email = email;
+  await user.save();
+
+  res.json({ data: user });
+}
 
 async function list(req, res) {
   const users = await User.find();
@@ -50,4 +60,10 @@ module.exports = {
   list,
   create: [bodyDataHas("username"), bodyDataHas("email"), create],
   read: [userExists, read],
+  update: [
+    userExists,
+    bodyDataHas("username"),
+    bodyDataHas("email"),
+    update
+  ],
 };

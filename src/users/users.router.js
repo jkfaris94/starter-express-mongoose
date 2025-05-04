@@ -10,6 +10,7 @@ router
 
 router
     .route("/:userId")
-    .get(controller.read);
+    .get(controller.read)
+    .put(controller.update);
 
 module.exports = router;
